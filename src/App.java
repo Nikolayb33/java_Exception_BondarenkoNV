@@ -1,7 +1,14 @@
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
-import javax.lang.model.type.ErrorType;
+import Exception.GenderException;
+import Exception.NameException;
+import Exception.PhoneNumberException;
+
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -10,6 +17,11 @@ public class App {
         int a = codeError(b);//Проверка на код ошибки
 
         answer(a);//Выводит ответ на вопрос достаточно ли указано данных пользователем
+
+        System.out.println("_____________");// разделим код
+
+        exceptionData(b); // проверяет строку на соотвествие формата ввода
+
 
     }
 
@@ -60,40 +72,129 @@ public class App {
     }
 
 /*
- * распарсим строку и посмотрим нужный ли формат данных
+ * распарсим строку и посмотрим нужный ли формат данных с помощью
+ * исключений
+ */
+
+ /*
+  * метод поиска ошибки и выброса исключения для фио
+  */
+    public static void cycleOfString(String str){
+        
+        for(String s: str.split("")){
+            if (Character.isLetter(s.charAt(0))){
+                // System.out.println(s);
+            }
+            else {
+                throw new NameException();
+            }
+        }
+    }
+/*
+ * метод поиска ошибки и выброса исключения для телефона
+ */
+    public static void cycleOfNum(String str){
+        
+        for(String s: str.split("")){
+            if (Character.isDigit(s.charAt(0))){
+                // System.out.println(s);
+            }
+            else {
+                throw new PhoneNumberException();
+            }
+        }
+    }
+
+    /*
+     *метод поиска ошибки в выборе пола 
+     */
+
+     public static void genderErrorTest(String str){
+        if (str.equals("m") || str.equals("f")){
+            System.out.println("Правильно указан пол");
+            System.out.println("_____________"); 
+        }
+        // if(){
+        //     System.out.println("Правильно указан пол");
+        // }
+        else{
+            throw new GenderException();
+        }
+
+     }
+/*
+ * метод для клиентского кода для поиска ошибок
  */
     public static void exceptionData(ArrayList<String> enterList) {
-        int i = 0;
-        String a0 = enterList.get(0);
-        String a1 = enterList.get(1);
-        String a2 = enterList.get(2);
-        String a3 = enterList.get(3);
-        try {
-            Integer a4 = Integer.parseInt(enterList.get(4));    
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-        
-        String a5 = enterList.get(5);
 
-        // if (enterList.get(0) instanceof String){
-        //     i ++;
-        // }
-        // if (enterList.get(1) instanceof String){
-        //     i ++;
-        // }
-        // if (enterList.get(2) instanceof String){
-        //     i ++;
-        // }
-        // if (enterList.get(3) instanceof String | enterList.get(3).split(".").length == 3){
-        //     i ++;
-        // }
-        // if (Integer.parseInt(enterList.get(4)){
-        //     i ++;
-        // }
-        // if (Integer.parseInt(enterList.get(5)) == "m" || Integer.parseInt(enterList.get(5)) == "f"){
-        //     i ++;
-        // }
+/*Проверка фио
+*/        
+        try{
+
+            System.out.println("Проверка имени...");
+            String a0 = enterList.get(0);
+            cycleOfString(a0);
+            System.out.println("Имя введено правильно");
+            System.out.println("_____________");
+
+            System.out.println("Проверка фамилии...");
+            String a1 = enterList.get(1);
+            cycleOfString(a1);
+            System.out.println("Фамилия введена правильно");
+            System.out.println("_____________");
+
+            System.out.println("Проверка отчества...");
+            String a2 = enterList.get(2);
+            cycleOfString(a2);
+            System.out.println("Отчество введено правильно");
+            System.out.println("_____________");
+
+        }catch(NameException e){
+            e.printStackTrace();
+            System.out.println("Ошибка в ФИО");
+            
+        }
+/*Проверка телефона
+ */        
+        try {
+            System.out.println("Проверка телефона...");
+            cycleOfNum(enterList.get(4));
+            System.out.println("Телефон введен правильно"); 
+            System.out.println("_____________");  
+        } catch (PhoneNumberException e) {
+            e.printStackTrace();
+            System.out.println("Не правильный формат номера телефона");
+        } 
+/*
+ * проверка даты
+ */
+        try{
+            System.out.println("Проверка даты рождения...");
+            SimpleDateFormat date_format = new SimpleDateFormat("dd.MM.yyyy");
+            Date date_res;
+            date_res = date_format.parse(enterList.get(3));
+            System.out.println("Дата рождения введена верно");
+            System.out.println("_____________"); 
+            // System.out.println(date_res);
+        }
+        catch(ParseException e){
+            e.printStackTrace();
+            System.out.println("Не правильный формат даты рождения");
+            System.out.println("_____________"); 
+        }
+
+/*
+ * проверка пола
+ */
+        try {
+            System.out.println("Проверка пола...");
+            genderErrorTest(enterList.get(5));
+        } catch (GenderException e) {
+            e.printStackTrace();
+            System.out.println("Не правильно указан пол...");
+            System.out.println("_____________"); 
+        }
+
     }
 }
 
