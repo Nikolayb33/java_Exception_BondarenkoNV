@@ -1,4 +1,9 @@
 
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,9 +25,22 @@ public class App {
 
         System.out.println("_____________");// разделим код
 
-        exceptionData(b); // проверяет строку на соотвествие формата ввода
+        
+        /*
+         * проверяет строку на соотвествие формата ввода и если не равно null
+         * то создает и записывает данные в файл
+         */
+        try{
+            ArrayList<String> toFile = exceptionData(b);
+            writeToFile(toFile);
+        }catch(NullPointerException e){
+            e.printStackTrace();
+            System.out.println("Не корректные входные данные");
+            System.out.println("____________________________");
 
-
+        }
+        
+        
     }
 
 
@@ -125,10 +143,11 @@ public class App {
 /*
  * метод для клиентского кода для поиска ошибок
  */
-    public static void exceptionData(ArrayList<String> enterList) {
+    public static ArrayList<String> exceptionData(ArrayList<String> enterList) {
 
 /*Проверка фио
 */        
+        int res = 0;
         try{
 
             System.out.println("Проверка имени...");
@@ -150,8 +169,10 @@ public class App {
             System.out.println("_____________");
 
         }catch(NameException e){
+            res ++;
             e.printStackTrace();
             System.out.println("Ошибка в ФИО");
+            
             
         }
 /*Проверка телефона
@@ -162,6 +183,7 @@ public class App {
             System.out.println("Телефон введен правильно"); 
             System.out.println("_____________");  
         } catch (PhoneNumberException e) {
+            res ++;
             e.printStackTrace();
             System.out.println("Не правильный формат номера телефона");
         } 
@@ -178,9 +200,11 @@ public class App {
             // System.out.println(date_res);
         }
         catch(ParseException e){
+            res ++;
             e.printStackTrace();
             System.out.println("Не правильный формат даты рождения");
             System.out.println("_____________"); 
+
         }
 
 /*
@@ -190,12 +214,56 @@ public class App {
             System.out.println("Проверка пола...");
             genderErrorTest(enterList.get(5));
         } catch (GenderException e) {
+            res ++;
             e.printStackTrace();
             System.out.println("Не правильно указан пол...");
             System.out.println("_____________"); 
+            
+        }
+        if (res == 0){
+            
+            return enterList;
+        }
+        else{
+            return null;
+        }
+
+    }
+
+
+    /*
+     * запись строки в приложение
+     */
+
+      public static void writeToFile(ArrayList<String> enterList) throws IOException {
+        String fileName = enterList.get(0) + ".txt";
+        try {
+            File path = new File(fileName);
+
+            if (!path.exists()){
+                path.createNewFile();
+            }
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));
+
+            String writeString = "<" + enterList.get(0) + ">" + " " + "<" + enterList.get(1) + ">" + " " +
+                     "<" + enterList.get(2) + ">" + " " + "<" + enterList.get(3) + ">" + " " +
+                     "<" + enterList.get(4) + ">" + " " + "<" + enterList.get(5) + ">";
+
+            bw.write(writeString);
+            System.out.println("Запись совершена");
+            bw.newLine();
+            bw.close();
+            System.out.println("Файл закрыт");
+
+
+        } catch (IOException e){
+            throw new IOException("Произошла ошибка во время создания или записи файла");
         }
 
     }
 }
+
+
 
 
